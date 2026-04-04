@@ -16,8 +16,8 @@
     "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
     "python.analysis.typeCheckingMode": "basic",
     "python.analysis.autoImportCompletions": true,
+    // Black: use ms-python.black-formatter via "Format With" / User settings (workspace JSON schema flags extension IDs here).
     "[python]": {
-      "editor.defaultFormatter": "ms-python.black-formatter",
       "editor.codeActionsOnSave": {
         "source.organizeImports": "explicit"
       }
@@ -53,35 +53,6 @@
       "github.vscode-pull-request-github",
       "eamodio.gitlens",
       "usernamehw.errorlens"
-    ]
-  },
-  "launch": {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "Pytest – all tests",
-        "type": "debugpy",
-        "request": "launch",
-        "module": "pytest",
-        "args": [
-          "tests/",
-          "-v"
-        ],
-        "console": "integratedTerminal",
-        "justMyCode": true
-      },
-      {
-        "name": "Pytest – modbus only",
-        "type": "debugpy",
-        "request": "launch",
-        "module": "pytest",
-        "args": [
-          "tests/test_modbus.py",
-          "-v"
-        ],
-        "console": "integratedTerminal",
-        "justMyCode": true
-      }
     ]
   },
   "tasks": {
