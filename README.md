@@ -38,6 +38,8 @@ Open `ac-mitsubishi-ha.code-workspace` in Cursor or VS Code.
 
 Workspace tasks (**Terminal → Run Task**) use the project `.venv` for tests and lint. **Clean caches** removes pytest/ruff/mypy caches, `__pycache__` under `custom_components` / `tests` / `scripts`, and build artifacts (not `.venv`; see `scripts/clean.ps1` / `scripts/clean.sh`).
 
+**Creating `.venv`:** from the repo root, run `python -m venv .venv` on Windows, or `python3 -m venv .venv` on Linux/macOS/WSL. Then activate and install packages as in **PowerShell (Windows)** or **Bash (Linux / macOS)** below. In Cursor/VS Code, use **Python: Select Interpreter** and choose `.venv` once it exists.
+
 Deploy tasks read **`HA_HOST`** and **`HA_USER`** from **`.env.ha`** (copy **`.env.ha.example`**; gitignored). Use **SSH keys** so `ssh` / `scp` / `rsync` over SSH never need an account password (see below). **Deploy to HA** runs `scripts/deploy-ha-rsync.sh` on Linux/macOS (`rsync -av --delete`) and **`scripts/deploy-ha-scp.ps1`** on Windows (`scp -r` with **`-i`** to `ha_deploy` when present). `scp` does not remove files on the host that you deleted locally.
 
 **Deploy to HA (rsync via WSL)** is for Windows when you want `rsync --delete` and have **rsync on the SSH server** (often **not** on Home Assistant OS). It uses **`deploy-ha-wsl.ps1`** and **`deploy-ha-wsl-bootstrap.sh`** (copies your Windows private key into WSL `~/.ssh` with `chmod 600` because OpenSSH rejects keys on `/mnt/c` with mode 0777).

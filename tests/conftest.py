@@ -3,7 +3,23 @@
 from __future__ import annotations
 
 import pytest
+import pytest_socket
 from unittest.mock import AsyncMock, MagicMock, patch
+
+
+@pytest.hookimpl(hookwrapper=True, trylast=True)
+def pytest_fixture_setup(fixturedef, request):
+    """Re-enable sockets before Home Assistant's event_loop fixture runs.
+
+    pytest-homeassistant-custom-component calls pytest_socket.disable_socket() in
+    pytest_runtest_setup; on Windows, ProactorEventLoop needs AF_INET socketpair()
+    for its internal pipe (not covered by allow_unix_socket). Fixture setup runs
+    after that hook, so we restore the real socket API immediately before the loop
+    is created.
+    """
+    if fixturedef.argname == "event_loop":
+        pytest_socket.enable_socket()
+    yield
 
 
 @pytest.fixture
