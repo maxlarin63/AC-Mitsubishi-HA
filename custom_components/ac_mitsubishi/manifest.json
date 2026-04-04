@@ -1,0 +1,12 @@
+{
+  "domain": "ac_mitsubishi",
+  "name": "AC Mitsubishi (Modbus RTU over TCP)",
+  "version": "1.0.0",
+  "config_flow": true,
+  "documentation": "https://github.com/your-repo/ac_mitsubishi",
+  "issue_tracker": "https://github.com/your-repo/ac_mitsubishi/issues",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [],
+  "iot_class": "local_polling"
+}

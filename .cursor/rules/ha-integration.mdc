@@ -1,0 +1,50 @@
+---
+description: Home Assistant Integration – coding conventions and architecture rules
+globs: ["custom_components/**/*.py", "tests/**/*.py"]
+---
+
+# AC Mitsubishi – HA Integration Cursor Rules
+
+## Stack
+- Python 3.12, asyncio, Home Assistant core API
+- Protocol: Modbus RTU over raw TCP (see modbus.py)
+- No third-party Modbus library — custom implementation in modbus.py
+
+## Architecture – file roles (never blur these)
+- `const.py`       — register maps, mode dicts, limits ONLY. Zero logic, zero HA imports.
+- `modbus.py`      — raw TCP framing + CRC only. Zero HA imports. Must be independently testable.
+- `coordinator.py` — polling via DataUpdateCoordinator + write helpers. Owns the ACState dataclass.
+- `climate.py`     — ClimateEntity state properties + async service handlers. No direct Modbus calls.
+- `config_flow.py` — UI setup only. Connectivity test via ModbusRTUClient context manager.
+- `__init__.py`    — async_setup_entry / async_unload_entry only.
+
+## HA conventions — always follow
+- Use `DataUpdateCoordinator` for ALL polling; never poll inside an entity.
+- Entities MUST inherit `CoordinatorEntity`.
+- Never call `schedule_update_ha_state()` — use `async_write_ha_state()`.
+- Config entries ONLY — no YAML/configuration.yaml setup.
+- All I/O must be async. Never use blocking calls (socket, time.sleep) in the event loop.
+- Use `UpdateFailed` (not exceptions) to signal coordinator poll failure.
+- Device info must be set via `_attr_device_info` dict on the entity.
+
+## Modbus register map (do not change without updating const.py)
+| Register | FC   | Address | Description              |
+|----------|------|---------|--------------------------|
+| Mode     | 0x03 | 0x0000  | HVAC operating mode      |
+| Setpoint | 0x03 | 0x0001  | Target temp × 10 (°C)    |
+| Fan      | 0x03 | 0x0002  | Fan speed                |
+| Vane     | 0x03 | 0x0003  | Vane/swing position      |
+| Power    | 0x03 | 0x0007  | 0=off, 1=on              |
+| RoomTemp | 0x04 | 0x0000  | Current temp × 10 (°C)   |
+
+## Testing conventions
+- Mock at the `ModbusRTUClient` level, not at the socket level.
+- Use `pytest-asyncio` with `asyncio_mode = "auto"`.
+- Each test file maps 1-to-1 with a source file (test_modbus.py → modbus.py).
+- Coordinator tests use `async_fire_time_changed` from `homeassistant.util.dt`.
+
+## Git branch naming
+- `feat/<short-description>` — new functionality
+- `fix/<short-description>`  — bug fixes
+- `refactor/<short-description>` — internal changes, no behaviour change
+- `test/<short-description>` — tests only
