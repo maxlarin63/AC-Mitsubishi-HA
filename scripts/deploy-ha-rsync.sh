@@ -53,6 +53,12 @@ if [[ "$ssh_rc" -ne 0 ]]; then
   exit 1
 fi
 
-rsync -av --delete custom_components/ac_mitsubishi/ \
+rsync -av --delete \
+  --exclude '__pycache__/' \
+  --exclude '*.pyc' \
+  --exclude '.pytest_cache/' \
+  --exclude '.mypy_cache/' \
+  --exclude '.ruff_cache/' \
+  custom_components/ac_mitsubishi/ \
   "${HA_USER}@${HA_HOST}:/config/custom_components/ac_mitsubishi/"
 echo "Deployed - restart HA"
