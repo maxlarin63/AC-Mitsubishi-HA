@@ -1,0 +1,161 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "AC Mitsubishi HA Integration"
+    }
+  ],
+  "settings": {
+    // ── Editor ────────────────────────────────────────────────────────────────
+    "editor.formatOnSave": true,
+    "editor.rulers": [
+      88
+    ],
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    // ── Python ────────────────────────────────────────────────────────────────
+    // Windows: Scripts\\python.exe — Linux/macOS: .venv/bin/python
+    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/Scripts/python.exe",
+    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.autoImportCompletions": true,
+    "[python]": {
+      "editor.defaultFormatter": "ms-python.black-formatter",
+      "editor.codeActionsOnSave": {
+        "source.organizeImports": "explicit"
+      }
+    },
+    // ── Files ─────────────────────────────────────────────────────────────────
+    "files.exclude": {
+      "**/__pycache__": true,
+      "**/*.pyc": true,
+      "**/.pytest_cache": true,
+      "**/.mypy_cache": true,
+      "**/.ruff_cache": true,
+      "**/*.egg-info": true
+    },
+    "files.associations": {
+      "*.mdc": "markdown"
+    },
+    // ── Search ────────────────────────────────────────────────────────────────
+    "search.exclude": {
+      "**/__pycache__": true,
+      "**/.venv": true
+    },
+    // ── Testing ───────────────────────────────────────────────────────────────
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+      "tests"
+    ],
+    "python.testing.unittestEnabled": false
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.black-formatter",
+      "ms-python.isort",
+      "ms-python.pylint",
+      "charliermarsh.ruff",
+      "github.vscode-pull-request-github",
+      "eamodio.gitlens",
+      "usernamehw.errorlens"
+    ]
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Pytest – all tests",
+        "type": "debugpy",
+        "request": "launch",
+        "module": "pytest",
+        "args": [
+          "tests/",
+          "-v"
+        ],
+        "console": "integratedTerminal",
+        "justMyCode": true
+      },
+      {
+        "name": "Pytest – modbus only",
+        "type": "debugpy",
+        "request": "launch",
+        "module": "pytest",
+        "args": [
+          "tests/test_modbus.py",
+          "-v"
+        ],
+        "console": "integratedTerminal",
+        "justMyCode": true
+      }
+    ]
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "Deploy to HA (rsync)",
+        "type": "shell",
+        "command": "rsync -av --delete custom_components/ac_mitsubishi/ ${input:haUser}@${input:haHost}:/config/custom_components/ac_mitsubishi/ && echo '✅ Deployed — restart HA'",
+        "windows": {
+          "options": {
+            "shell": {
+              "executable": "wsl.exe",
+              "args": [
+                "-e",
+                "bash",
+                "-c"
+              ]
+            }
+          }
+        },
+        "group": "build",
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Run tests",
+        "type": "shell",
+        "command": "${workspaceFolder}/.venv/bin/python -m pytest tests/ -v",
+        "windows": {
+          "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe -m pytest tests/ -v"
+        },
+        "group": {
+          "kind": "test",
+          "isDefault": true
+        },
+        "presentation": {
+          "reveal": "always",
+          "panel": "dedicated"
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "Lint (ruff)",
+        "type": "shell",
+        "command": "${workspaceFolder}/.venv/bin/python -m ruff check custom_components/",
+        "windows": {
+          "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe -m ruff check custom_components/"
+        },
+        "group": "build",
+        "problemMatcher": []
+      }
+    ],
+    "inputs": [
+      {
+        "id": "haHost",
+        "type": "promptString",
+        "description": "Home Assistant IP address",
+        "default": "192.168.116.x"
+      },
+      {
+        "id": "haUser",
+        "type": "promptString",
+        "description": "SSH username",
+        "default": "root"
+      }
+    ]
+  }
+}
