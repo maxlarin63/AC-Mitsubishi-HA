@@ -2,21 +2,18 @@
 
 from __future__ import annotations
 
-import pytest
-from unittest.mock import AsyncMock
-
 from homeassistant.components.climate import HVACMode
 
-from custom_components.ac_mitsubishi.coordinator import ACState
 from custom_components.ac_mitsubishi.const import (
-    REG_MODE, REG_POWER, REG_SETPOINT, REG_FAN, REG_VANE,
-    HVAC_MODE_TO_REG, FAN_MODE_TO_REG, SWING_MODE_TO_REG,
-    FAN_MODE_QUIET, SWING_POS_2,
+    FAN_MODE_TO_REG,
+    HVAC_MODE_TO_REG,
+    SWING_MODE_TO_REG,
 )
+from custom_components.ac_mitsubishi.coordinator import ACState
 
 
 def make_state(**kwargs) -> ACState:
-    defaults = dict(power=1, mode=3, setpoint_raw=210, fan=0, vane=0, room_temp_raw=235)
+    defaults = {"power": 1, "mode": 3, "setpoint_raw": 210, "fan": 0, "vane": 0, "room_temp_raw": 235}
     defaults.update(kwargs)
     return ACState(**defaults)
 

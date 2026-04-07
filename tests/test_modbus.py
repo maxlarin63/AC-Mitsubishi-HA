@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-import pytest
-from custom_components.ac_mitsubishi.modbus import _crc16, _build_read_frame, _build_write_frame
+from custom_components.ac_mitsubishi.modbus import _build_read_frame, _build_write_frame, _crc16
 
 
 def test_crc16_known_value():

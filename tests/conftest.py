@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from unittest.mock import AsyncMock, patch
+
 import pytest
 import pytest_socket
-from unittest.mock import AsyncMock, MagicMock, patch
 
 
 @pytest.hookimpl(hookwrapper=True, trylast=True)
