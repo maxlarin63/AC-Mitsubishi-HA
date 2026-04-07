@@ -5,15 +5,16 @@ from homeassistant.components.climate import HVACMode
 DOMAIN = "ac_mitsubishi"
 
 # Integration version (also mirrored in manifest.json)
-INTEGRATION_VERSION = "0.0.3"
+INTEGRATION_VERSION = "0.0.6"
 
 # Configuration keys
 CONF_HOST = "host"
 CONF_PORT = "port"
+CONF_SCAN_INTERVAL = "scan_interval"
 
 # Defaults
 DEFAULT_PORT = 4001
-DEFAULT_SCAN_INTERVAL = 60  # seconds
+DEFAULT_SCAN_INTERVAL = 5  # seconds
 
 # Modbus slave / unit ID
 MODBUS_SLAVE = 0x01

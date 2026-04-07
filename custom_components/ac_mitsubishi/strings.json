@@ -6,7 +6,8 @@
         "description": "Enter the IP address and TCP port of your Modbus adapter (e.g. Elfin EW11).",
         "data": {
           "host": "IP Address",
-          "port": "Port"
+          "port": "Port",
+          "scan_interval": "Polling interval (seconds)"
         }
       }
     },
@@ -15,6 +16,16 @@
     },
     "abort": {
       "already_configured": "This device is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "AC Mitsubishi options",
+        "data": {
+          "scan_interval": "Polling interval (seconds)"
+        }
+      }
     }
   }
 }

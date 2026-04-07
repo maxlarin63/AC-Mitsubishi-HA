@@ -13,7 +13,7 @@ Originally ported from a FIBARO HC3 Quick App by [Indome.ee / Kuuno](https://ind
 | Vane / swing | Auto / Position 1–5 / Swing |
 | Temperature | Current room temp + settable target (16–31 °C, step 0.5) |
 | Protocol | Modbus RTU over raw TCP – no MBAP header |
-| Polling | Every 60 seconds (local\_polling) |
+| Polling | Configurable interval (default 5 s, local\_polling) |
 
 ---
 
@@ -53,6 +53,7 @@ collaboration elsewhere.
 |---|---|---|
 | Host | — | IP address of the Modbus TCP adapter |
 | Port | 4001 | TCP port of the adapter |
+| Polling interval | 5 s | How often registers are read (seconds; change later under **Configure**) |
 
 ## Development
 

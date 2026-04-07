@@ -64,7 +64,7 @@ class MitsubishiACClimate(CoordinatorEntity[MitsubishiACCoordinator], ClimateEnt
     """
     Representation of the Mitsubishi AC as a Home Assistant Climate entity.
 
-    State is driven by the coordinator (polled every 60 s).  Write operations
+    State is driven by the coordinator (polling interval from config).  Write operations
     send a single Modbus register write and immediately trigger a refresh.
     """
 

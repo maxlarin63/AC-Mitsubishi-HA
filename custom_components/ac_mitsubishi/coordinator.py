@@ -1,8 +1,8 @@
 """
 DataUpdateCoordinator for AC Mitsubishi.
 
-Polls all six Modbus registers in a single TCP session every
-DEFAULT_SCAN_INTERVAL seconds and exposes the results as a typed dataclass.
+Polls all six Modbus registers in a single TCP session on each update interval
+(from config / options) and exposes the results as a typed dataclass.
 """
 
 from __future__ import annotations
@@ -18,6 +18,7 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from .const import (
     CONF_HOST,
     CONF_PORT,
+    CONF_SCAN_INTERVAL,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     FC_READ_HOLDING,
@@ -67,12 +68,18 @@ class MitsubishiACCoordinator(DataUpdateCoordinator[ACState]):
         self.host: str = entry.data[CONF_HOST]
         self.port: int = entry.data[CONF_PORT]
         self.entry = entry
+        scan_seconds: int = int(
+            entry.options.get(
+                CONF_SCAN_INTERVAL,
+                entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
+            )
+        )
 
         super().__init__(
             hass,
             _LOGGER,
             name=f"{DOMAIN}_{self.host}",
-            update_interval=timedelta(seconds=DEFAULT_SCAN_INTERVAL),
+            update_interval=timedelta(seconds=scan_seconds),
         )
 
     async def _async_update_data(self) -> ACState:
