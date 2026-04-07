@@ -11,6 +11,7 @@ globs: ["**/*.py", "**/*.json", "**/*.yaml", "**/*.yml", "**/*.toml"]
 - All polling lives in `custom_components/ac_mitsubishi/coordinator.py` via `DataUpdateCoordinator`.
 - Entities **never** poll directly; they read from `self.coordinator.data`.
 - Climate entity inherits `CoordinatorEntity`.
+- Power on/off: `switch.py` — same device as climate; writes `REG_POWER` via coordinator.
 - Config entries only — no YAML setup.
 - All I/O is `async`. No blocking calls in the event loop.
 

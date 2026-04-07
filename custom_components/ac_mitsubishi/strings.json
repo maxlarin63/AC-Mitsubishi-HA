@@ -18,6 +18,13 @@
       "already_configured": "This device is already configured."
     }
   },
+  "entity": {
+    "switch": {
+      "power": {
+        "name": "Power"
+      }
+    }
+  },
   "options": {
     "step": {
       "init": {
