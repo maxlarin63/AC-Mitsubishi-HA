@@ -12,7 +12,6 @@ from __future__ import annotations
 import asyncio
 import logging
 import struct
-from typing import Optional
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -63,8 +62,8 @@ class ModbusRTUClient:
         self.host = host
         self.port = port
         self.slave = slave
-        self._reader: Optional[asyncio.StreamReader] = None
-        self._writer: Optional[asyncio.StreamWriter] = None
+        self._reader: asyncio.StreamReader | None = None
+        self._writer: asyncio.StreamWriter | None = None
 
     # ── Connection management ─────────────────────────────────────────────────
 
@@ -77,7 +76,7 @@ class ModbusRTUClient:
             )
             _LOGGER.debug("Connected to %s:%s", self.host, self.port)
             return True
-        except (OSError, asyncio.TimeoutError) as exc:
+        except (TimeoutError, OSError) as exc:
             _LOGGER.error("Connection to %s:%s failed: %s", self.host, self.port, exc)
             return False
 
@@ -100,7 +99,7 @@ class ModbusRTUClient:
 
     # ── Modbus operations ─────────────────────────────────────────────────────
 
-    async def read_register(self, func: int, reg: int) -> Optional[int]:
+    async def read_register(self, func: int, reg: int) -> int | None:
         """
         Read a single register.
 
@@ -129,7 +128,7 @@ class ModbusRTUClient:
             _LOGGER.warning("Short response for FC%02X reg %04X: %s", func, reg, data.hex())
             return None
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             _LOGGER.error("Timeout reading FC%02X reg %04X", func, reg)
         except Exception as exc:  # noqa: BLE001
             _LOGGER.error("Error reading FC%02X reg %04X: %s", func, reg, exc)
@@ -154,7 +153,7 @@ class ModbusRTUClient:
             _LOGGER.debug("RX: %s", data.hex(" ").upper())
             return True
 
-        except asyncio.TimeoutError:
+        except TimeoutError:
             _LOGGER.error("Timeout writing reg %04X value %d", reg, value)
         except Exception as exc:  # noqa: BLE001
             _LOGGER.error("Error writing reg %04X value %d: %s", reg, value, exc)
@@ -162,7 +161,7 @@ class ModbusRTUClient:
 
     # ── Context manager support ───────────────────────────────────────────────
 
-    async def __aenter__(self) -> "ModbusRTUClient":
+    async def __aenter__(self) -> ModbusRTUClient:
         await self.connect()
         return self
 

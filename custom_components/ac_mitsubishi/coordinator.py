@@ -10,7 +10,6 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from datetime import timedelta
-from typing import Optional
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -39,21 +38,21 @@ _LOGGER = logging.getLogger(__name__)
 class ACState:
     """Snapshot of all AC registers after a single poll cycle."""
 
-    power: Optional[int]           # 0 = off, 1 = on
-    mode: Optional[int]            # raw mode register value
-    setpoint_raw: Optional[int]    # setpoint * 10  (e.g. 210 → 21.0 °C)
-    fan: Optional[int]             # raw fan register value
-    vane: Optional[int]            # raw vane register value
-    room_temp_raw: Optional[int]   # room temp * 10
+    power: int | None           # 0 = off, 1 = on
+    mode: int | None            # raw mode register value
+    setpoint_raw: int | None    # setpoint * 10  (e.g. 210 → 21.0 °C)
+    fan: int | None             # raw fan register value
+    vane: int | None            # raw vane register value
+    room_temp_raw: int | None   # room temp * 10
 
     # ── Convenience properties ────────────────────────────────────────────────
 
     @property
-    def setpoint(self) -> Optional[float]:
+    def setpoint(self) -> float | None:
         return self.setpoint_raw / 10.0 if self.setpoint_raw is not None else None
 
     @property
-    def room_temp(self) -> Optional[float]:
+    def room_temp(self) -> float | None:
         return self.room_temp_raw / 10.0 if self.room_temp_raw is not None else None
 
     @property

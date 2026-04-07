@@ -6,11 +6,10 @@ import logging
 from typing import Any
 
 import voluptuous as vol
-
 from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_HOST, CONF_PORT
 
-from .const import DEFAULT_PORT, DOMAIN
+from .const import DEFAULT_PORT, DOMAIN, INTEGRATION_VERSION
 from .modbus import ModbusRTUClient
 
 _LOGGER = logging.getLogger(__name__)
@@ -50,7 +49,7 @@ class MitsubishiACConfigFlow(ConfigFlow, domain=DOMAIN):
 
             if not errors:
                 return self.async_create_entry(
-                    title=f"AC Mitsubishi ({host})",
+                    title=f"AC Mitsubishi v{INTEGRATION_VERSION} ({host})",
                     data={CONF_HOST: host, CONF_PORT: port},
                 )
 

@@ -1,4 +1,5 @@
 {
-  "name": "AC Mitsubishi",
+  "homeassistant": "2024.8.0",
+  "name": "AC Mitsubishi (Modbus RTU over TCP)",
   "render_readme": true
 }

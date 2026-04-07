@@ -1,0 +1,48 @@
+---
+description: AC Mitsubishi HA integration — Cursor AI coding rules
+globs: ["**/*.py", "**/*.json", "**/*.yaml", "**/*.yml", "**/*.toml"]
+---
+
+# AC Mitsubishi project rules
+
+## Architecture
+
+- All Modbus I/O lives in `custom_components/ac_mitsubishi/modbus.py` — **zero HA imports**, independently testable.
+- All polling lives in `custom_components/ac_mitsubishi/coordinator.py` via `DataUpdateCoordinator`.
+- Entities **never** poll directly; they read from `self.coordinator.data`.
+- Climate entity inherits `CoordinatorEntity`.
+- Config entries only — no YAML setup.
+- All I/O is `async`. No blocking calls in the event loop.
+
+## const.py
+
+- No business logic. Register addresses, mode maps (`HVACMode` / fan / swing), and tuning constants go here.
+- `INTEGRATION_VERSION` must stay in sync with `manifest.json` (see `.cursor/rules/versioning.mdc`).
+
+## coordinator.py
+
+- Raises `UpdateFailed` (not raw exceptions) from `_async_update_data` when the unit is unreachable.
+- Opens one Modbus TCP session per poll cycle; reads registers; closes connection.
+
+## modbus.py
+
+- Uses `asyncio.open_connection` — no external Modbus library.
+- Modbus **RTU framing** over raw TCP (no MBAP header); CRC-16 on frames.
+
+## Naming conventions
+
+- Domain: `ac_mitsubishi`
+- Device identifiers: `{(DOMAIN, entry.entry_id)}`
+- Config entry title: `AC Mitsubishi v{INTEGRATION_VERSION} ({host})`
+
+## Tests
+
+- `tests/test_modbus.py` — frame/CRC helpers, no HA fixtures where possible.
+- `tests/test_climate.py` — maps and `ACState` behavior.
+- Mock Modbus at the `ModbusRTUClient` level in coordinator tests, not at raw socket level.
+
+## Deploy
+
+- Credentials come from `.env.ha` (gitignored); never hardcode.
+- PowerShell: avoid `&&` — use separate lines or `;`.
+- WSL key handling lives in `deploy-ha-wsl-bootstrap.sh`.

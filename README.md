@@ -15,15 +15,37 @@ Originally ported from a FIBARO HC3 Quick App by [Indome.ee / Kuuno](https://ind
 | Protocol | Modbus RTU over raw TCP – no MBAP header |
 | Polling | Every 60 seconds (local\_polling) |
 
+---
+
+## GitHub repository settings (HACS / validation)
+
+HACS’ **topics** check reads your repository metadata on GitHub (not files in this repo).  
+In the repo **Settings → General → Topics**, add for example:
+
+`home-assistant`, `hacs-custom`, `custom-integration`, `mitsubishi`, `modbus`, `climate`, `hvac`
+
+Also ensure the repo has a **short description** and **Issues** enabled (other HACS checks).
+
+**Public repository:** HACS and `hacs/action` load `hacs.json` and integration `manifest.json` from
+public `raw.githubusercontent.com` URLs. On a **private** repo those requests return 404, so validation
+often reports an invalid `hacs.json` and `integration_manifest … got None` even when the files are
+committed. The integration must stay **public** for HACS users; use a public fork if you need private
+collaboration elsewhere.
+
+---
+
 ## Installation
+
+### HACS (recommended)
+1. In HACS, add this repository as a **custom integration** repository (category: Integration).
+2. Install **AC Mitsubishi (Modbus RTU over TCP)**.
+3. Restart Home Assistant.
+4. **Settings → Devices & services → Add integration → AC Mitsubishi**.
 
 ### Manual
 1. Copy `custom_components/ac_mitsubishi/` to `<config>/custom_components/ac_mitsubishi/`
 2. Restart Home Assistant
-3. **Settings → Integrations → Add Integration → AC Mitsubishi**
-
-### HACS (once published)
-Add this repo as a custom repository in HACS → Integrations.
+3. **Settings → Devices & services → Add integration → AC Mitsubishi**
 
 ## Configuration
 
@@ -40,7 +62,9 @@ Workspace tasks (**Terminal → Run Task**) use the project `.venv` for tests an
 
 **Creating `.venv`:** from the repo root, run `python -m venv .venv` on Windows, or `python3 -m venv .venv` on Linux/macOS/WSL. Then activate and install packages as in **PowerShell (Windows)** or **Bash (Linux / macOS)** below. In Cursor/VS Code, use **Python: Select Interpreter** and choose `.venv` once it exists.
 
-Deploy tasks read **`HA_HOST`** and **`HA_USER`** from **`.env.ha`** (copy **`.env.ha.example`**; gitignored). Use **SSH keys** so `ssh` / `scp` / `rsync` over SSH never need an account password (see below). **Deploy to HA** runs `scripts/deploy-ha-rsync.sh` on Linux/macOS (`rsync -av --delete`) and **`scripts/deploy-ha-scp.ps1`** on Windows (`scp` with **`-i`** to `ha_deploy` when present). Both **omit** **`__pycache__`**, **`*.pyc`**, and common tool caches from the upload. `scp` does not remove files on the host that you deleted locally.
+Deploy scripts require **`.env.ha`** at the repo root (copy **`.env.ha.example`**). They read **`HA_HOST`** (required) and **`HA_USER`** (defaults to **`root`** when omitted, same pattern as KVent). Use **SSH keys** so `ssh` / `scp` / `rsync` over SSH never need an account password (see below). **Deploy to HA** runs `scripts/deploy-ha-rsync.sh` on Linux/macOS/WSL (`rsync -avz --delete`, plus a remote `rsync` precheck for HAOS) and **`scripts/deploy-ha-scp.ps1`** on Windows (`ssh mkdir -p`, then `scp` with **`-o StrictHostKeyChecking=no -o BatchMode=yes`** and **`-i`** to `ha_deploy` when present). Both print the integration **version** from `manifest.json` and **omit** **`__pycache__`**, **`*.pyc`**, and common tool caches. `scp` does not remove files on the host that you deleted locally.
+
+Optional **`HA_HTTP_URL`** (e.g. `http://homeassistant.local:8123`) and **`HA_TOKEN`** (Profile → Security → **Long-lived access token**) call the **`homeassistant.restart`** service after a successful deploy so Core reloads custom components without using the UI.
 
 **Deploy to HA (rsync via WSL)** is for Windows when you want `rsync --delete` and have **rsync on the SSH server** (often **not** on Home Assistant OS). It uses **`deploy-ha-wsl.ps1`** and **`deploy-ha-wsl-bootstrap.sh`** (copies your Windows private key into WSL `~/.ssh` with `chmod 600` because OpenSSH rejects keys on `/mnt/c` with mode 0777).
 
@@ -145,11 +169,11 @@ Open the repo from Windows so paths map under **`/mnt/...`** in WSL.
 ### PowerShell (Windows)
 
 ```powershell
-git clone https://github.com/yourname/ac-mitsubishi-ha.git
+git clone https://github.com/maxlarin63/ac-mitsubishi-ha.git
 Set-Location ac-mitsubishi-ha
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install pytest pytest-asyncio pytest-homeassistant-custom-component ruff
+pip install pytest pytest-asyncio pytest-homeassistant-custom-component pytest-socket ruff
 pytest tests/ -v
 ruff check custom_components/
 ```
@@ -161,10 +185,10 @@ If script activation is blocked, run once for your user:
 ### Bash (Linux / macOS)
 
 ```bash
-git clone https://github.com/yourname/ac-mitsubishi-ha.git
+git clone https://github.com/maxlarin63/ac-mitsubishi-ha.git
 cd ac-mitsubishi-ha
 python -m venv .venv && source .venv/bin/activate
-pip install pytest pytest-asyncio pytest-homeassistant-custom-component ruff
+pip install pytest pytest-asyncio pytest-homeassistant-custom-component pytest-socket ruff
 pytest tests/ -v
 ruff check custom_components/
 ```

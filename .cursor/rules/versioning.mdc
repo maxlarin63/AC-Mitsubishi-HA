@@ -1,0 +1,42 @@
+---
+description: MUST bump AC Mitsubishi version when deployable files change (strict)
+globs:
+  [
+    "custom_components/ac_mitsubishi/**",
+    "scripts/deploy-ha-scp.ps1",
+    "scripts/deploy-ha-rsync.sh",
+  ]
+alwaysApply: true
+---
+
+# AC Mitsubishi version bump (strict)
+
+## Requirement
+
+Any edit that changes **deployable** artifacts **must** include a **SemVer bump in the same change set** (same task / commit). Never leave `custom_components/ac_mitsubishi/` or deploy script changes at the old version.
+
+**Deployable paths:**
+
+- Everything under `custom_components/ac_mitsubishi/` (code, `manifest.json`, `strings.json`, `translations/**`, etc.)
+- `scripts/deploy-ha-scp.ps1`
+- `scripts/deploy-ha-rsync.sh`
+
+**No exceptions** for “small” fixes (e.g. one-line bugfix, signature fix, copy-only `strings.json`). If it ships on the HA host, bump the version.
+
+## How to bump (always both)
+
+1. `custom_components/ac_mitsubishi/manifest.json` → `"version": "MAJOR.MINOR.PATCH"`
+2. `custom_components/ac_mitsubishi/const.py` → `INTEGRATION_VERSION = "MAJOR.MINOR.PATCH"` (**must match** `manifest.json` exactly)
+
+## SemVer guidance
+
+- **PATCH**: bug fixes, small behavior tweaks, any runtime-impacting refactors
+- **MINOR**: new entities/platforms, new options, backward-compatible features
+- **MAJOR**: breaking changes (removed entities, renames, semantics that require user action)
+
+## Checklist before finishing a task
+
+- [ ] Touched `custom_components/ac_mitsubishi/**`, `scripts/deploy-ha-scp.ps1`, or `scripts/deploy-ha-rsync.sh`?
+- [ ] If yes: bumped **both** `manifest.json` and `INTEGRATION_VERSION`?
+
+If the answer to the first is yes and the second is no, the task is **not done**.

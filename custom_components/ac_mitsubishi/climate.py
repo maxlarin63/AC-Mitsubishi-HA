@@ -27,6 +27,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
     DOMAIN,
+    FAN_MODE_TO_REG,
     HVAC_MODE_TO_REG,
     MAX_TEMP,
     MIN_TEMP,
@@ -34,15 +35,14 @@ from .const import (
     REG_MODE,
     REG_POWER,
     REG_SETPOINT,
-    REG_VANE,
     REG_TO_FAN_MODE,
     REG_TO_HVAC_MODE,
     REG_TO_SWING_MODE,
+    REG_VANE,
     SUPPORTED_FAN_MODES,
     SUPPORTED_HVAC_MODES,
     SUPPORTED_SWING_MODES,
     SWING_MODE_TO_REG,
-    FAN_MODE_TO_REG,
     TEMP_STEP,
 )
 from .coordinator import MitsubishiACCoordinator

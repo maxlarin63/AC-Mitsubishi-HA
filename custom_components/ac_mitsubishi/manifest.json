@@ -1,12 +1,13 @@
 {
   "domain": "ac_mitsubishi",
   "name": "AC Mitsubishi (Modbus RTU over TCP)",
-  "version": "1.0.0",
+  "version": "0.0.3",
+  "codeowners": ["@maxlarin63"],
   "config_flow": true,
-  "documentation": "https://github.com/your-repo/ac_mitsubishi",
-  "issue_tracker": "https://github.com/your-repo/ac_mitsubishi/issues",
+  "documentation": "https://github.com/maxlarin63/ac-mitsubishi-ha",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/maxlarin63/ac-mitsubishi-ha/issues",
   "requirements": [],
-  "dependencies": [],
-  "codeowners": [],
-  "iot_class": "local_polling"
+  "homeassistant": "2024.8.0"
 }
