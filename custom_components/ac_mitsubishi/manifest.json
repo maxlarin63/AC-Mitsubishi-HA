@@ -1,7 +1,7 @@
 {
   "domain": "ac_mitsubishi",
   "name": "AC Mitsubishi (Modbus RTU over TCP)",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "codeowners": ["@maxlarin63"],
   "config_flow": true,
   "documentation": "https://github.com/maxlarin63/ac-mitsubishi-ha",

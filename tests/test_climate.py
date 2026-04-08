@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import pytest
+
+pytest.importorskip("homeassistant")
+
 from homeassistant.components.climate import HVACMode
 
 from custom_components.ac_mitsubishi.const import (

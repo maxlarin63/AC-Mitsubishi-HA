@@ -23,6 +23,11 @@
       "power": {
         "name": "Power"
       }
+    },
+    "sensor": {
+      "drive_mode": {
+        "name": "Drive mode"
+      }
     }
   },
   "options": {

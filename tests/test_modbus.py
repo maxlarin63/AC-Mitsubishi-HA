@@ -2,7 +2,20 @@
 
 from __future__ import annotations
 
-from custom_components.ac_mitsubishi.modbus import _build_read_frame, _build_write_frame, _crc16
+from pathlib import Path
+
+from tests._import import import_module_from_path
+
+_MODBUS = import_module_from_path(
+    "ac_mitsubishi_modbus",
+    Path(__file__).resolve().parents[1]
+    / "custom_components"
+    / "ac_mitsubishi"
+    / "modbus.py",
+)
+_build_read_frame = _MODBUS._build_read_frame
+_build_write_frame = _MODBUS._build_write_frame
+_crc16 = _MODBUS._crc16
 
 
 def test_crc16_known_value():
