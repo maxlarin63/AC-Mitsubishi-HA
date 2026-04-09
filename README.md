@@ -12,7 +12,8 @@ Originally ported from a FIBARO HC3 Quick App by [Indome.ee / Kuuno](https://ind
 | Fan speeds | Auto / Quiet / Weak / Strong / Very Strong |
 | Vane / swing | Auto / Position 1–5 / Swing |
 | Temperature | Current room temp + settable target (16–31 °C, step 0.5) |
-| Power | `switch` entity on the same device: unit on/off. For a **tile** card, set `color` (e.g. `#2196F3`) if you want a blue accent (switches use the theme “active” color by default). If you have a stale **`light.*_power`** from an old build, remove it in **Developer tools → Entities**. |
+| Power | `switch` entity on the same device: unit on/off. For a **tile** card, set `color` (e.g. `#2196F3`) if you want a blue accent (switches use the theme “active” color by default). |
+| Status | `sensor` entity on the same device: **Drive mode** (includes i-see modes 9/10/11). |
 | Protocol | Modbus RTU over raw TCP – no MBAP header |
 | Polling | Configurable interval (default 5 s, local\_polling) |
 
@@ -58,7 +59,7 @@ collaboration elsewhere.
 
 ## Dashboard (thermostat vs tiles)
 
-This integration creates **`climate.*`** (full HVAC UI) and **`switch.*_power`** (on/off). **Tile** cards are optional shortcuts: they do **not** replace the classic thermostat / climate card.
+This integration creates **`climate.*`** (full HVAC UI), **`switch.*_power`** (on/off), and **`sensor.*_drive_mode`** (status). **Tile** cards are optional shortcuts: they do **not** replace the classic thermostat / climate card.
 
 To get the **round thermostat-style** control again:
 
@@ -75,6 +76,10 @@ entity: climate.ac_mitsubishi_living_room
 If no **Thermostat** card appears in the gallery, use **Add card → By entity**, select the **climate** entity, and choose the suggested climate/thermostat layout.
 
 **Tiles alone:** a tile bound to **`climate.*`** is a compact row, not the full ring thermostat. Keep a **Thermostat** card for `climate.*` and use a **tile** (or another card) for **`switch.*_power`** if you want a separate power toggle.
+
+### Tile icon click (turn on/off)
+
+If your tile card uses the default icon action (**toggle**), `climate.turn_on` turns the unit **on in Cooling mode**, and `climate.turn_off` turns it **off**.
 
 ## Development
 
