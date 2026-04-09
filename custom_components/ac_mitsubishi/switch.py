@@ -42,7 +42,7 @@ class MitsubishiACPowerSwitch(
         self._attr_unique_id = f"{entry.entry_id}_power"
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": f"AC Mitsubishi ({host})",
+            "name": entry.title,
             "manufacturer": "Mitsubishi Electric",
             "model": "Modbus RTU over TCP",
             "configuration_url": f"http://{host}",

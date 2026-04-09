@@ -5,7 +5,7 @@ from homeassistant.components.climate import HVACMode
 DOMAIN = "ac_mitsubishi"
 
 # Integration version (also mirrored in manifest.json)
-INTEGRATION_VERSION = "0.0.12"
+INTEGRATION_VERSION = "0.0.13"
 
 # Configuration keys
 CONF_HOST = "host"

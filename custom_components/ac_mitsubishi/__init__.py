@@ -19,7 +19,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-from .const import CONF_HOST, DOMAIN, INTEGRATION_VERSION
+from .const import DOMAIN, INTEGRATION_VERSION
 from .coordinator import MitsubishiACCoordinator
 
 _LOGGER = logging.getLogger(__name__)
@@ -29,8 +29,7 @@ PLATFORMS: list[Platform] = [Platform.CLIMATE, Platform.SWITCH, Platform.SENSOR]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up AC Mitsubishi from a config entry."""
-    host: str = entry.data[CONF_HOST]
-    desired_title = f"AC Mitsubishi v{INTEGRATION_VERSION} ({host})"
+    desired_title = f"AC Mitsubishi v{INTEGRATION_VERSION}"
     if entry.title != desired_title:
         hass.config_entries.async_update_entry(entry, title=desired_title)
 

@@ -56,12 +56,10 @@ class MitsubishiACDriveModeSensor(
         super().__init__(coordinator)
         host = entry.data[CONF_HOST]
 
-        # Separate "status" child device linked to the main AC device.
         self._attr_unique_id = f"{entry.entry_id}_drive_mode"
         self._attr_device_info = {
-            "identifiers": {(DOMAIN, f"{entry.entry_id}_status")},
-            "name": f"AC Mitsubishi Status ({host})",
-            "via_device": (DOMAIN, entry.entry_id),
+            "identifiers": {(DOMAIN, entry.entry_id)},
+            "name": entry.title,
             "manufacturer": "Mitsubishi Electric",
             "model": "MelcoBEMS MINI (A1M)",
             "configuration_url": f"http://{host}",
