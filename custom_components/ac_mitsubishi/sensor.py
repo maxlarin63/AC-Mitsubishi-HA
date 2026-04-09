@@ -59,7 +59,7 @@ class MitsubishiACDriveModeSensor(
         self._attr_unique_id = f"{entry.entry_id}_drive_mode"
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": entry.title,
+            "name": "AC Mitsubishi",
             "manufacturer": "Mitsubishi Electric",
             "model": "MelcoBEMS MINI (A1M)",
             "configuration_url": f"http://{host}",

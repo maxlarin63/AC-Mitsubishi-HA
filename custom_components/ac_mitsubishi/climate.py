@@ -17,6 +17,7 @@ from typing import Any
 from homeassistant.components.climate import (
     ClimateEntity,
     ClimateEntityFeature,
+    HVACAction,
     HVACMode,
 )
 from homeassistant.config_entries import ConfigEntry
@@ -82,6 +83,8 @@ class MitsubishiACClimate(CoordinatorEntity[MitsubishiACCoordinator], ClimateEnt
         ClimateEntityFeature.TARGET_TEMPERATURE
         | ClimateEntityFeature.FAN_MODE
         | ClimateEntityFeature.SWING_MODE
+        | ClimateEntityFeature.TURN_ON
+        | ClimateEntityFeature.TURN_OFF
     )
 
     def __init__(
@@ -96,7 +99,7 @@ class MitsubishiACClimate(CoordinatorEntity[MitsubishiACCoordinator], ClimateEnt
         self._attr_unique_id = f"{entry.entry_id}_climate"
         self._attr_device_info = {
             "identifiers": {(DOMAIN, entry.entry_id)},
-            "name": entry.title,
+            "name": "AC Mitsubishi",
             "manufacturer": "Mitsubishi Electric",
             "model": "Modbus RTU over TCP",
             "configuration_url": f"http://{host}",
@@ -115,6 +118,31 @@ class MitsubishiACClimate(CoordinatorEntity[MitsubishiACCoordinator], ClimateEnt
         if state is None or not state.is_on:
             return HVACMode.OFF
         return REG_TO_HVAC_MODE.get(state.mode, HVACMode.AUTO)
+
+    @property
+    def hvac_action(self) -> HVACAction | None:
+        """Best-effort current action from A1M registers (coarse mapping).
+
+        Uses only power (Drive ON/OFF) and drive mode (40001). This is not a
+        compressor/demand signal; it may show heating/cooling even when the unit
+        is holding temperature.
+        """
+        state = self.coordinator.data
+        if state is None or not state.is_on:
+            return HVACAction.OFF
+
+        mode = state.mode
+        if mode in (1, 9):  # heat / i-see heat
+            return HVACAction.HEATING
+        if mode in (3, 11):  # cool / i-see cool
+            return HVACAction.COOLING
+        if mode in (2, 10):  # dry / i-see dry
+            return HVACAction.DRYING
+        if mode == 7:  # ventilation / fan-only
+            return HVACAction.FAN
+        if mode == 8:  # auto (direction unknown without more signals)
+            return HVACAction.IDLE
+        return HVACAction.IDLE
 
     @property
     def current_temperature(self) -> float | None:
@@ -141,6 +169,21 @@ class MitsubishiACClimate(CoordinatorEntity[MitsubishiACCoordinator], ClimateEnt
         return REG_TO_SWING_MODE.get(state.vane)
 
     # ── Service call handlers (write to device) ───────────────────────────────
+
+    async def async_turn_on(self) -> None:
+        """Handle `climate.turn_on` (tile icon toggle).
+
+        When turning on from the tile icon, prefer Cooling mode.
+        """
+        state = self.coordinator.data
+        if state is not None and state.is_on:
+            return
+        await self.coordinator.async_write_register(REG_POWER, 1)
+        await self.coordinator.async_write_register(REG_MODE, HVAC_MODE_TO_REG[HVACMode.COOL])
+
+    async def async_turn_off(self) -> None:
+        """Handle `climate.turn_off` (tile icon toggle)."""
+        await self.coordinator.async_write_register(REG_POWER, 0)
 
     async def async_set_hvac_mode(self, hvac_mode: HVACMode) -> None:
         """
