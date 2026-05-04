@@ -40,3 +40,25 @@ Any edit that changes **deployable** artifacts **must** include a **SemVer bump 
 - [ ] If yes: bumped **both** `manifest.json` and `INTEGRATION_VERSION`?
 
 If the answer to the first is yes and the second is no, the task is **not done**.
+
+## Commit messages (required whenever this change set bumps the version)
+
+**Subject line — MUST match all of:**
+
+1. **Starts with** exactly `v` + SemVer + comma + space: `vMAJOR.MINOR.PATCH, ` (no space after `v`; space only after the comma).
+2. **Then** a short summary of what changed (do **not** repeat "AC Mitsubishi", "integration", or "version X.Y.Z" in the subject — the `v…` prefix is enough).
+
+**Subject line — MUST NOT use** as the opening: `Update AC Mitsubishi`, `Update … integration`, `Bump version`, `Release`, or any lead-in other than `vMAJOR.MINOR.PATCH, `.
+
+**Valid:** `v0.0.18, fix vane register write on cool mode`
+
+**Invalid:** `Update AC Mitsubishi integration to version 0.0.18, fix vane register write on cool mode`
+
+**Optional body** (bullets below the subject; keep the subject one line): describe **functional** or **user-visible** changes only.
+
+**Commit body — MUST NOT** include boilerplate about the mandatory version bump, for example:
+
+- `Incremented integration version in const.py and manifest.json.`
+- Same idea in other words (`version bump`, `updated manifest.json` / `const.py` only for SemVer).
+
+The **`vMAJOR.MINOR.PATCH` prefix in the subject** already signals the release version; do **not** repeat that housekeeping in the body.
