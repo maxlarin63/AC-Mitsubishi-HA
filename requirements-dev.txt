@@ -1,0 +1,16 @@
+# Development / test dependencies for ac_mitsubishi.
+#
+# Usage (Python 3.12):
+#
+#   py -3.12 -m venv .venv
+#   .\.venv\Scripts\Activate.ps1        # PowerShell
+#   # source .venv/bin/activate          # Linux/macOS
+#   pip install -r requirements-dev.txt
+#
+# Or run the "Ensure venv" / "Recreate venv" task in the workspace.
+
+pytest
+pytest-asyncio
+pytest-homeassistant-custom-component
+pytest-socket
+ruff

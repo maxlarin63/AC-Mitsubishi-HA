@@ -2,6 +2,50 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Ensure venv",
+      "detail": "No-op if .venv exists; otherwise create it (Python 3.12) and install requirements-dev.txt. Wired as a dependsOn for Run tests and Lint (ruff).",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\scripts\\ensure-venv.ps1"],
+      "windows": {
+        "command": "powershell",
+        "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\scripts\\ensure-venv.ps1"]
+      },
+      "linux": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/ensure-venv.sh"]
+      },
+      "osx": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/ensure-venv.sh"]
+      },
+      "group": "build",
+      "presentation": { "reveal": "silent", "panel": "dedicated", "showReuseMessage": false },
+      "problemMatcher": []
+    },
+    {
+      "label": "Recreate venv",
+      "detail": "Delete .venv if present, then create a fresh one (Python 3.12) and install requirements-dev.txt. Use after upgrading Python or when requirements-dev.txt changes.",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\scripts\\recreate-venv.ps1"],
+      "windows": {
+        "command": "powershell",
+        "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}\\scripts\\recreate-venv.ps1"]
+      },
+      "linux": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/recreate-venv.sh"]
+      },
+      "osx": {
+        "command": "bash",
+        "args": ["${workspaceFolder}/scripts/recreate-venv.sh"]
+      },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "problemMatcher": []
+    },
+    {
       "label": "Deploy to HA",
       "type": "shell",
       "command": "bash scripts/deploy-ha-rsync.sh",
@@ -36,6 +80,8 @@
       "windows": {
         "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe -m pytest tests/ -v"
       },
+      "dependsOrder": "sequence",
+      "dependsOn": ["Ensure venv"],
       "group": {
         "kind": "test",
         "isDefault": true
@@ -53,6 +99,8 @@
       "windows": {
         "command": "${workspaceFolder}\\.venv\\Scripts\\python.exe -m ruff check custom_components/"
       },
+      "dependsOrder": "sequence",
+      "dependsOn": ["Ensure venv"],
       "group": "build",
       "problemMatcher": []
     },
