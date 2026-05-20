@@ -52,7 +52,10 @@ if [[ -z "$identity" && -f "$HOME/.ssh/ha_deploy" ]]; then
   identity="$HOME/.ssh/ha_deploy"
 fi
 
-SSH_OPTS=(-o StrictHostKeyChecking=no -o BatchMode=yes)
+# Pin MACs=hmac-sha2-256-etm: Advanced SSH addon offers umac-128-etm first
+# and some OpenSSH clients pick it by default, but that pairing reliably
+# corrupts MAC mid-stream ("Corrupted MAC on input"). SHA-256 EtM is clean.
+SSH_OPTS=(-o StrictHostKeyChecking=no -o BatchMode=yes -o MACs=hmac-sha2-256-etm@openssh.com)
 if [[ -n "$identity" && -f "$identity" ]]; then
   SSH_OPTS+=(-i "$identity")
 fi

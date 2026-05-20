@@ -57,7 +57,10 @@ if ($version) {
     Write-Host "Deploying AC Mitsubishi to $destDisplay"
 }
 
-$sshScpOpts = @('-o', 'StrictHostKeyChecking=no', '-o', 'BatchMode=yes')
+# Pin MACs=hmac-sha2-256-etm: Advanced SSH addon offers umac-128-etm first
+# and Windows OpenSSH picks it by default, but that pairing reliably corrupts
+# MAC mid-stream ("Corrupted MAC on input"). SHA-256 EtM is clean.
+$sshScpOpts = @('-o', 'StrictHostKeyChecking=no', '-o', 'BatchMode=yes', '-o', 'MACs=hmac-sha2-256-etm@openssh.com')
 $sshArgs = @($sshScpOpts)
 $scpArgs = @($sshScpOpts)
 if (Test-Path -LiteralPath $identity) {
