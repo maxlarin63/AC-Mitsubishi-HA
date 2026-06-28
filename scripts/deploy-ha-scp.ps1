@@ -21,7 +21,7 @@ Get-Content -LiteralPath $envFile | ForEach-Object {
     if ($eq -lt 1) { return }
     $name = $line.Substring(0, $eq).Trim()
     $val = $line.Substring($eq + 1).Trim()
-    if (($val.StartsWith('"') -and $val.EndsWith('"')) -or ($val.StartsWith("'") -and $val.EndsWith("'"))) {
+    if ($val.Length -ge 2 -and (($val.StartsWith('"') -and $val.EndsWith('"')) -or ($val.StartsWith("'") -and $val.EndsWith("'")))) {
         $val = $val.Substring(1, $val.Length - 2)
     }
     Set-Item -Path "Env:$name" -Value $val
